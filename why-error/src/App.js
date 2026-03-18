@@ -6,9 +6,11 @@ import { useState } from "react";
 function App() {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
 
   const handleExplain = async () => {
+    setLoading(true);
     const res = await fetch("http://localhost:5000/explain", {
       method: "POST",
       headers: {
@@ -19,10 +21,10 @@ function App() {
 
     const data = await res.json();
     setResult(data);
+    setLoading(false);
   };
 
   console.log("Result:", result); // Debugging line to check the response from the backend
-
   return (
     <div style={styles.container}>
 
@@ -38,8 +40,8 @@ function App() {
         onChange={(e) => setError(e.target.value)}
       />
 
-      <button style={styles.button} onClick={handleExplain}>
-        Explain Error
+      <button style={{...styles.button , cursor: loading ? "not-allowed" : "pointer"}} onClick={handleExplain} disabled={loading}>
+        {loading ? "Explaining..." : "Explain My Error"}
       </button>
 
       {result && (
@@ -82,8 +84,8 @@ function Section({ title, children }) {
 
 const styles = {
   container: {
-    maxWidth: "700px",
-    margin: "50px auto",
+    maxWidth: "1000px",
+    margin: "0px auto",
     padding: "20px",
     fontFamily: "Arial, sans-serif",
   },
@@ -91,6 +93,8 @@ const styles = {
     textAlign: "center",
     fontSize: "32px",
     marginBottom: "5px",
+    width: "100%",
+    
   },
   tagline: {
     textAlign: "center",
@@ -100,7 +104,7 @@ const styles = {
   textarea: {
     width: "100%",
     padding: "12px",
-    fontSize: "14px",
+    fontSize: "18px",
     borderRadius: "8px",
     border: "1px solid #ccc",
     marginBottom: "15px",
@@ -121,6 +125,7 @@ const styles = {
     borderRadius: "10px",
     backgroundColor: "#f9f9f9",
     border: "1px solid #ddd",
+    width: "100%",
   },
 };
 
